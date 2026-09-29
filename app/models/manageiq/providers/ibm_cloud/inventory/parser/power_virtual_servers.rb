@@ -54,7 +54,7 @@ class ManageIQ::Providers::IbmCloud::Inventory::Parser::PowerVirtualServers < Ma
         :vendor            => "ibm_power_vs",
         :connection_state  => "connected",
         :raw_power_state   => instance.status,
-        :uid_ems           => instance.pvm_instance_id,
+        :uid_ems           => instance.crn,
         :format            => instance.storage_type,
         :placement_group   => persister.placement_groups.lazy_find(instance.placement_group),
         :resource_pool     => persister.resource_pools.lazy_find(instance.shared_processor_pool_id)
