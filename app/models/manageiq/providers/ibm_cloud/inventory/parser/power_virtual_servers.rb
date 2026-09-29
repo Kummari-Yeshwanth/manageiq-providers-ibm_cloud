@@ -54,7 +54,7 @@ class ManageIQ::Providers::IbmCloud::Inventory::Parser::PowerVirtualServers < Ma
         :vendor            => "ibm_power_vs",
         :connection_state  => "connected",
         :raw_power_state   => instance.status,
-        :uid_ems           => instance.pvm_instance_id,
+        :uid_ems           => instance.crn,
         :format            => instance.storage_type,
         :placement_group   => persister.placement_groups.lazy_find(instance.placement_group),
         :resource_pool     => persister.resource_pools.lazy_find(instance.shared_processor_pool_id)
@@ -146,7 +146,7 @@ class ManageIQ::Providers::IbmCloud::Inventory::Parser::PowerVirtualServers < Ma
   def images
     collector.images.each do |image|
       ps_image = persister.miq_templates.build(
-        :uid_ems            => image.image_id,
+        :uid_ems            => image.crn,
         :ems_ref            => image.image_id,
         :name               => image.name,
         :description        => image.specifications.image_type,
@@ -169,6 +169,7 @@ class ManageIQ::Providers::IbmCloud::Inventory::Parser::PowerVirtualServers < Ma
     collector.volumes.each do |vol|
       persister.cloud_volumes.build(
         :availability_zone => persister.availability_zones.lazy_find(persister.cloud_manager.uid_ems),
+        :uid_ems           => vol.crn,
         :ems_ref           => vol.volume_id,
         :name              => vol.name,
         :status            => vol.state,
@@ -187,6 +188,7 @@ class ManageIQ::Providers::IbmCloud::Inventory::Parser::PowerVirtualServers < Ma
       network = collector.network(network_ref.network_id)
 
       persister_cloud_networks = persister.cloud_networks.build(
+        :uid_ems => network.crn,
         :ems_ref => "#{network.network_id}-#{network.type}",
         :name    => "#{network.name}-#{network.type}",
         :cidr    => "",
@@ -247,6 +249,7 @@ class ManageIQ::Providers::IbmCloud::Inventory::Parser::PowerVirtualServers < Ma
   def placement_groups
     collector.placement_groups.placement_groups.each do |sgrp|
       persister.placement_groups.build(
+        :uid_ems           => sgrp.crn,
         :availability_zone => persister.availability_zones.lazy_find(persister.cloud_manager.uid_ems),
         :name              => sgrp.name,
         :policy            => sgrp.policy,
