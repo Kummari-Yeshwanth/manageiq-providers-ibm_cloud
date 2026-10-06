@@ -146,7 +146,7 @@ class ManageIQ::Providers::IbmCloud::Inventory::Parser::PowerVirtualServers < Ma
   def images
     collector.images.each do |image|
       ps_image = persister.miq_templates.build(
-        :uid_ems            => image.image_id,
+        :uid_ems            => image.crn,
         :ems_ref            => image.image_id,
         :name               => image.name,
         :description        => image.specifications.image_type,
@@ -169,6 +169,7 @@ class ManageIQ::Providers::IbmCloud::Inventory::Parser::PowerVirtualServers < Ma
     collector.volumes.each do |vol|
       persister.cloud_volumes.build(
         :availability_zone => persister.availability_zones.lazy_find(persister.cloud_manager.uid_ems),
+        :uid_ems           => vol.crn,
         :ems_ref           => vol.volume_id,
         :name              => vol.name,
         :status            => vol.state,
@@ -187,6 +188,7 @@ class ManageIQ::Providers::IbmCloud::Inventory::Parser::PowerVirtualServers < Ma
       network = collector.network(network_ref.network_id)
 
       persister_cloud_networks = persister.cloud_networks.build(
+        :uid_ems => network.crn,
         :ems_ref => "#{network.network_id}-#{network.type}",
         :name    => "#{network.name}-#{network.type}",
         :cidr    => "",
@@ -247,6 +249,7 @@ class ManageIQ::Providers::IbmCloud::Inventory::Parser::PowerVirtualServers < Ma
   def placement_groups
     collector.placement_groups.placement_groups.each do |sgrp|
       persister.placement_groups.build(
+        :uid_ems           => sgrp.crn,
         :availability_zone => persister.availability_zones.lazy_find(persister.cloud_manager.uid_ems),
         :name              => sgrp.name,
         :policy            => sgrp.policy,
@@ -333,7 +336,7 @@ class ManageIQ::Providers::IbmCloud::Inventory::Parser::PowerVirtualServers < Ma
   def shared_processor_pools
     collector.shared_processor_pools.shared_processor_pools.each do |pool|
       params = {
-        :uid_ems             => pool.id,
+        :uid_ems             => pool.crn,
         :ems_ref             => pool.id,
         :name                => pool.name,
         :cpu_cores_available => pool.available_cores,
