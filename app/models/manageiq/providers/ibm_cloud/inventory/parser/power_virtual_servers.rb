@@ -249,7 +249,6 @@ class ManageIQ::Providers::IbmCloud::Inventory::Parser::PowerVirtualServers < Ma
   def placement_groups
     collector.placement_groups.placement_groups.each do |sgrp|
       persister.placement_groups.build(
-        :uid_ems           => sgrp.crn,
         :availability_zone => persister.availability_zones.lazy_find(persister.cloud_manager.uid_ems),
         :name              => sgrp.name,
         :policy            => sgrp.policy,
